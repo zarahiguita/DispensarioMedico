@@ -1,0 +1,90 @@
+/* Estilos generales */
+/* Reset de box-sizing */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: white; /* Fondo oscuro para contraste */
+  font-family: Arial, sans-serif;
+}
+
+/* Estilos generales de inputs y select */
+select, input {
+  width: 100%;
+  height: 40px; /* Ajusta según el tamaño de los inputs */
+  font-size: 16px;
+  padding: 8px;
+  border: 2px solid rgb(34, 28, 13);
+  border-radius: 4px;
+  background-color: #E0E0C0; /* Fondo claro tipo khaki */
+  color: #333;
+  outline: none;
+}
+
+/* Estilos específicos para select */
+select {
+  appearance: none; /* Elimina estilos nativos del sistema */
+  cursor: pointer;
+}
+
+/* Contenedor del formulario */
+.form-register {
+  background-color: #AF1415; /* Verde oliva oscuro, tono militar */
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  margin: 50px auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Título del formulario */
+.form__titulo {
+  color: #AF1415; /* Khaki para resaltar el título */
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+/* Estilos para los labels */
+.contenedor-inputs label {
+  display: block;
+  color: #F0E68C;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Botón de envío */
+.btn_enviar {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(34, 28, 13); /* Verde militar */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn_enviar:hover {
+  background-color: #6B8E23; /* Tono más claro al pasar el ratón */
+}
+.img-left,
+.img-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 400px; /* Tamaño aumentado */
+  height: auto;
+}
+
+.img-left {
+  left: 120px; /* Ajusta la distancia del formulario */
+}
+
+.img-right {
+  right: 90px; /* Ajusta la distancia del formulario */
+}

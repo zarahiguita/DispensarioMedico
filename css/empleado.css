@@ -1,0 +1,183 @@
+/* Box-sizing global */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Estilos generales */
+body {
+  background-color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor del formulario */
+.form-register {
+  background-color: #AF1415; /* Rojo oscuro */
+  padding: 20px;
+  border-radius: 8px;
+  width: 900px;
+  margin: 50px auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+  text-align: center;
+}
+
+/* Título del formulario */
+h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+/* Estilo del contenedor general */
+.contenedor-inputs {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cada fieldset se verá con 2 columnas internas */
+fieldset {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  border: 2px solid rgb(34, 28, 13);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #7B1314;
+  color: #F0E68C;
+}
+
+legend {
+  grid-column: span 2;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.campo label {
+  color: #F0E68C;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Inputs y selects */
+.campo input,
+.campo select {
+  padding: 8px;
+  border: 2px solid rgb(34, 28, 13);
+  border-radius: 4px;
+  background-color: #E0E0C0;
+  color: #333;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1em;
+}
+
+/* Previene que los select con mucho texto rompan el diseño */
+select {
+  appearance: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Botón de envío */
+.btn_enviar {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(34, 28, 13);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn_enviar:hover {
+  background-color: #6B8E23;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  fieldset {
+    grid-template-columns: 1fr;
+  }
+
+  .form-register {
+    width: 90%;
+    margin: 20px auto;
+  }
+}
+
+/* Estilos para las imágenes */
+.img-left,
+.img-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: auto;
+}
+
+.img-left {
+  left: -300px;
+}
+
+.img-right {
+  right: -350px;
+}
+.btn-guardar {
+  background: rgb(34, 28, 13);
+  color: white;
+  padding: 12px 28px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(34, 28, 13);
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-guardar:hover {
+  background: #6B8E23;
+
+}
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#spinner p {
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+}

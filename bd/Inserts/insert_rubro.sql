@@ -1,0 +1,6 @@
+-- Insertar datos en la tabla rubro
+INSERT INTO rubro (rubro_presupuestal, descripcion_rubro, fecha_creacion, fecha_actualizacion)
+VALUES 
+('A-02-02-02-008-002', 'SERVICIOS JURÍDICOS Y CONTABLES', '2025-01-01', '2025-01-01'),
+('A-02-02-02-008-003', 'SERVICIOS PROFESIONALES, CIENTÍFICOS Y TÉCNICOS', '2025-01-01', '2025-01-01'),
+('A-02-02-02-009-003', 'SERVICIOS PROFESIONALES CIENTÍFICOS TÉCNICOS (EXCEPTO URBANISMO)', '2025-01-01', '2025-01-01');

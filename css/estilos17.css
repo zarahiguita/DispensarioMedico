@@ -1,0 +1,48 @@
+body {
+	margin: 0;
+	font-family: sans-serif;
+	background-color: #2C2C2C;
+
+}
+
+header	{
+	width: 100%;
+	background: black;
+}
+
+.menu ul {
+	margin: 0;
+	list-style: none;
+	padding: 0;
+	display: flex;
+
+}
+
+.menu li:hover {
+	background: rgba(0,0,0,0.3);
+
+}
+
+
+.menu li a {
+	display: block;
+	padding: 15px 20px;
+	color: #fff;
+	text-decoration: none;
+}
+
+.form_link {
+
+	text-align: right;
+	font-size: 1em;
+	padding: 15px 50px;
+	
+
+}
+.botones-container {
+	display: flex;
+	justify-content: flex-end; /* Alinea los elementos a la derecha */
+	gap: 10px; /* Espacio entre los botones */
+	padding: 10px; /* Espaciado alrededor de los botones */
+}
+
