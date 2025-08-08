@@ -63,7 +63,9 @@ CREATE TABLE unidad (
 CREATE TABLE ordenador_gasto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     grado VARCHAR(100) NOT NULL,
-    nombre VARCHAR(100) NOT NULL
+    nombre VARCHAR(100) NOT NULL,
+    cedula VARCHAR(100) NOT NULL
+    lugar_expedicion_cedula VARCHAR(100) NOT NULL
 );
 
 

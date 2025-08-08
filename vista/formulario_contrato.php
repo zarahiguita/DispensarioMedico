@@ -217,7 +217,7 @@ if (!$unidad) {
           </select>
           <label><input type="checkbox" id="crearOrdenadorCheckbox"> Agregar nuevo ordenador del gasto</label>
           <div id="nuevoOrdenadorInputs" class="hidden">
-            <input type="text" name="nuevo_grado" placeholder="Grado" readonly>
+            <input type="text" name="nuevo_grado" id="nuevo_grado" placeholder="Grado" readonly>
             <input type="text" name="nuevo_nombre_ordenador" placeholder="Nombre" readonly>
             <input type="text" name="nuevo_cedula_ordenador" placeholder="Cédula" readonly>
             <input type="text" name="nuevo_lugar_expedicion_cedula" placeholder="Lugar de expedición" readonly>
@@ -301,7 +301,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const form = document.querySelector('.form-register');
   const inputsYSelects = form.querySelectorAll('input:not(#documentoInput):not([type="submit"]), select, textarea');
   const nombreInput = document.querySelector('input[name="nombre_completo"]');
-  const tipoCuentaInput = document.querySelector('input[name="tipo_cuenta_bancaria"]');
+  const tipoCuentaInput = document.getElementById('tipo_bancoSelect');
+
   const numeroCuentaInput = document.querySelector('input[name="numero_cuenta_bancaria"]');
   const plazoInput = document.querySelector('input[name="meses_contratados"]');
   const valorContratoInput = document.querySelector('input[name="valor_total_contrato"]');
@@ -457,8 +458,8 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-  const selectUnidad = document.getElementById("unidad");
-  const nuevaUnidad = document.getElementById("nueva_unidad");
+  const selectUnidad = document.getElementById("unidadSelect");
+  const nuevaUnidad = document.getElementById("nuevaUnidadInput");
 
   nuevaUnidad.addEventListener("input", function () {
     if (this.value.trim() !== "") {
@@ -478,8 +479,8 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-  const selectRubro = document.getElementById("rubro_presupuestal");
-  const nuevoRubro = document.getElementById("nuevo_rubro");
+  const selectRubro = document.getElementById("rubroSelect");
+  const nuevoRubro = document.getElementById("nuevoRubroInput");
 
   nuevoRubro.addEventListener("input", function () {
     if (this.value.trim() !== "") {
@@ -498,8 +499,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 </script>
 <script>
-  const selectcargo = document.getElementById("cargo");
-  const nuevoCargo = document.getElementById("nuevo_cargo");
+  const selectcargo = document.getElementById("cargoSelect");
+  const nuevoCargo = document.getElementById("nuevoCargoInput");
 
   nuevoCargo.addEventListener("input", function () {
     if (this.value.trim() !== "") {
@@ -518,8 +519,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 </script>
 <script>
-  const selectentidad = document.getElementById("entidad_bancaria");
-  const nuevaEntidad = document.getElementById("nueva_entidad_bancaria");
+  const selectentidad = document.getElementById("entidadSelect");
+  const nuevaEntidad = document.getElementById("nuevaEntidadInput");
 
   nuevaEntidad.addEventListener("input", function () {
     if (this.value.trim() !== "") {
@@ -538,8 +539,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 </script>
 <script>
-  const selectNombreAsesor = document.getElementById("nombre_asesor_juridico");
-  const nuevoNombreAsesor = document.getElementById("nuevo_nombre_asesor_juridico");
+  const selectNombreAsesor = document.getElementById("asesorSelect");
+  const nuevoNombreAsesor = document.getElementById("nuevoAsesorInput");
 
   nuevoNombreAsesor.addEventListener("input", function () {
     if (this.value.trim() !== "") {
@@ -558,8 +559,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 </script>
 <script>
-  const selectNombreSupervisor = document.getElementById("nombre_supervisor");
-  const nuevoSupervisor = document.getElementById("nuevo_supervisor");
+  const selectNombreSupervisor = document.getElementById("supervisorSelect");
+  const nuevoSupervisor = document.getElementById("nuevoSupervisorInput");
 
   nuevoSupervisor.addEventListener("input", function () {
     if (this.value.trim() !== "") {
@@ -604,7 +605,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-  const selectOrdenador = document.getElementById("ordenador_gasto");
+  const selectOrdenador = document.getElementById("ordenadorSelect");
   const nuevoOrdenador = document.getElementById("nuevo_grado");
 
   nuevoOrdenador.addEventListener("input", function () {

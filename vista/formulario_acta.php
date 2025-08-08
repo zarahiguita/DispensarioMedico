@@ -13,87 +13,7 @@ $rps = $conexion->query("SELECT numero, fecha, valor FROM rp");
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $cedula = $_POST["cedula"];
-    $modalidad = $_POST["modalidad"];
-    $fecha_inicio = $_POST["fecha_inicio"];
-    $supervisor = $_POST["supervisor"];
-    $asesor_juridico = $_POST["asesor_juridico"];
-    $nuevo_supervisor = $_POST["nuevo_supervisor"] ?? '';
-    $nuevo_asesor = $_POST["nuevo_asesor"] ?? '';
-    $rp = $_POST["rp"] ?? '';
-    $numero_rp = $_POST["numero_rp"] ?? '';
-    $fecha_rp = $_POST["fecha_rp"] ?? '';
-    $valor_rp = $_POST["valor_rp"] ?? '';
 
-if ($rp === 'nuevo' && $numero_rp && $fecha_rp && $valor_rp) {
-    // Verificar si ya existe ese número de RP
-    $verifica = $conexion->prepare("SELECT id FROM rp WHERE numero = ?");
-    $verifica->bind_param("s", $numero_rp);
-    $verifica->execute();
-    $verifica->store_result();
-
-    if ($verifica->num_rows === 0) {
-        $inserta = $conexion->prepare("INSERT INTO rp (numero, fecha, valor) VALUES (?, ?, ?)");
-        $inserta->bind_param("ssd", $numero_rp, $fecha_rp, $valor_rp);
-        $inserta->execute();
-        $inserta->close();
-    }
-
-    $verifica->close();
-    $rp_final = $numero_rp;
-} else {
-    $rp_final = $rp;
-}
-
-   
-
-    if ($nuevo_supervisor) {
-        $conexion->query("INSERT INTO supervisor (nombre_supervisor, fecha_creacion, fecha_actualizacion) VALUES ('$nuevo_supervisor', NOW(), NOW())");
-        $supervisor = $nuevo_supervisor;
-    }
-    if ($nuevo_asesor) {
-        $conexion->query("INSERT INTO asesor_juridico (nombre, cedula) VALUES ('$nuevo_asesor', '')");
-        $asesor_juridico = $nuevo_asesor;
-    }
-    // ORDENADOR DEL GASTO
-$ordenador_gasto = $_POST["ordenador_gasto"];
-if ($ordenador_gasto === 'nuevo') {
-    $grado = $_POST["grado_ordenador"] ?? '';
-    $nombre = $_POST["nombre_ordenador"] ?? '';
-    $cedula_ordenador = $_POST["cedula_ordenador"] ?? '';
-    $lugar_expedicion = $_POST["lugar_expedicion_ordenador"] ?? '';
-
-    if ($nombre) {
-        $conexion->query("INSERT INTO ordenador_gasto (grado, nombre, cedula, lugar_expedicion_cedula)
-                          VALUES ('$grado', '$nombre', '$cedula_ordenador', '$lugar_expedicion')");
-        $ordenador_gasto_final = $nombre;
-    } else {
-        $ordenador_gasto_final = 'N/A';
-    }
-} else {
-    $ordenador_gasto_final = $ordenador_gasto;
-}
-
-
-    $sql = "UPDATE contrato_detallado SET 
-        fecha_acta_inicio = ?,  
-        supervisor = ?, 
-        nombre_asesor_juridico = ?
-       
-        WHERE documento_identidad = ?";
-
-    $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("ssss", 
-        $fecha_inicio, 
-        $supervisor, $asesor_juridico, $cedula
-    );
-
-    if ($stmt->execute()) {
-        echo "<script>alert('✅ Acta de inicio guardada correctamente.'); window.location.href = 'formulario_busqueda.php';</script>";
-    } else {
-        echo "<script>alert('❌ Error al guardar el acta.'); window.history.back();</script>";
-    }
-    exit;
 }
 ?>
 
@@ -161,7 +81,7 @@ textarea {
 
 <h2 class="form__titulo">FORMULARIO ACTA DE INICIO</h2>
 
-<form method="POST" class="form-register">
+<form  class="form-register" action="procesar_acta_inicio.php" method="POST">
     <img src="../imagenes/ejercito.png" alt="Ejército" class="img-left">
     <img src="../imagenes/logo2.png" alt="Logo" class="img-right">
 

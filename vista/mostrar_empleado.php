@@ -164,6 +164,20 @@ foreach (['docx', 'doc', 'pdf'] as $ext) {
     }
 }
 
+
+// === ACTA DE INICIO (busca en ambas rutas)
+$nombreActa = "Acta_Inicio_{$numeroContratoCompleto}.docx";
+$rutaActaPrestacion = __DIR__ . "/contratos_acta_inicio_prestacion/" . $nombreActa;
+$rutaActaContrato = __DIR__ . "/contratos_acta_inicio_contrato/" . $nombreActa;
+
+$urlActa = null;
+if (file_exists($rutaActaPrestacion)) {
+    $urlActa = "contratos_acta_inicio_prestacion/" . $nombreActa;
+} elseif (file_exists($rutaActaContrato)) {
+    $urlActa = "contratos_acta_inicio_contrato/" . $nombreActa;
+}
+
+
 ?>
 <tr>
     <td><?= htmlspecialchars($fila['nombre_completo_contratista']) ?></td>
@@ -215,9 +229,21 @@ foreach (['docx', 'doc', 'pdf'] as $ext) {
 <?php endif; ?>
 &nbsp;&nbsp;
 
-<a href="formulario_acta.php?cedula=<?= urlencode($cedula) ?>" class="btn-doc" title="Registrar acta">
-  📝 Pendiente Acta de incio
-</a>
+<!-- Acta de inicio -->
+<?php if ($urlActa): ?>
+    <a href="<?= $urlActa ?>" download title="Descargar acta de inicio">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#2B579A">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <path d="M14 2v6h6" fill="#2B579A"/>
+        <text x="7" y="18" font-family="Arial" font-size="12" fill="white">A</text>
+      </svg>
+    </a>
+<?php else: ?>
+    <a href="formulario_acta.php?cedula=<?= urlencode($cedula) ?>" class="btn-doc" title="Registrar acta de inicio">
+      📝 Pendiente Acta de inicio
+    </a>
+<?php endif; ?>
+
 
 </td>
 </tr>
