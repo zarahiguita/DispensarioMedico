@@ -4,7 +4,10 @@ $cedula = isset($_GET['cedula']) ? $conexion->real_escape_string($_GET['cedula']
 ?>
 <!DOCTYPE html>
 <html lang="es">
+    
 <head>
+    	<link rel="stylesheet" type="text/css" href="../css/general.css">
+
     <meta charset="UTF-8">
     <title>Resultados de Empleado</title>
     <style>
@@ -13,6 +16,7 @@ $cedula = isset($_GET['cedula']) ? $conexion->real_escape_string($_GET['cedula']
             top: 20px;
             left: 20px;
             width: 180px;
+            margin-top: 40px;
         }
         body {
             position: relative;
@@ -92,7 +96,18 @@ $cedula = isset($_GET['cedula']) ? $conexion->real_escape_string($_GET['cedula']
     </style>
 </head>
 <body>
-
+ <a href="formulario_busqueda.php" class="boton-buscar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M10 2a8 8 0 105.293 14.707l5 5a1 1 0 001.414-1.414l-5-5A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4z"/>
+    </svg>
+    Buscar empleado
+  </a>
+  <a href="../menu1.php" class="boton-volver">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" fill="none"/>
+    </svg>
+    Volver
+  </a>
 <img src="../imagenes/logo4.png" alt="Logo Empresa" class="logo">
 
 <?php if ($cedula === ''): ?>

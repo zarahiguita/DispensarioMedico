@@ -1,0 +1,19 @@
+    .hidden { display: none; }
+    .boton-buscar, .boton-volver {
+      position: absolute;
+      background-color: #AF1415;
+      color: white;
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .boton-buscar { top: 20px; left: 20px; }
+    .boton-volver { top: 20px; right: 20px; }
+    .boton-buscar svg, .boton-volver svg { width: 16px; height: 16px; fill: white; }
+    .boton-buscar:hover, .boton-volver:hover { background-color: #45a049; }
