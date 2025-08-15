@@ -56,7 +56,9 @@ CREATE TABLE asesor_juridico (
 -- Tabla de unidad
 CREATE TABLE unidad (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    unidad VARCHAR(100) NOT NULL
+    unidad VARCHAR(100) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    localidad VARCHAR(100) NOT NULL
 );
 
 -- Tabla de ordenador del gasto
