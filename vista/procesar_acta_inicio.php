@@ -13,8 +13,6 @@ include('../bd/cn.php');
 $cedula = $_POST["cedula"];
 $modalidad = $_POST["modalidad"];
 
-echo "<script>alert('Modalidad recibida: " . strtolower(trim(string: $modalidad)) === 'prestación de servicios' . "');</script>";
-
 $fecha_inicio = $_POST["fecha_inicio"];
 $supervisor = $_POST["supervisor"];
 $asesor_juridico = $_POST["asesor_juridico"];
@@ -84,7 +82,7 @@ $sql = "UPDATE contrato_detallado SET
         valor_pago_mensual = ?
         WHERE documento_identidad = ?";
 
-$stmt = $conexion->prepare(query: $sql);
+$stmt = $conexion-> prepare($sql);
 $stmt->bind_param(
     "sssssss", // 7 parámetros tipo string
     $fecha_inicio,
@@ -124,7 +122,7 @@ if ($stmt->execute()) {
         $template = new TemplateProcessor('plantilla_acta_inicio_1.docx');
 
     } else {
-        $template = new TemplateProcessor(documentTemplate: 'plantilla_acta_inicio_2.docx');
+        $template = new TemplateProcessor('plantilla_acta_inicio_2.docx');
 
     }
 
@@ -187,7 +185,7 @@ PARÁGRAFO CUARTO: L";
     }
 
     $template->setValue('lugar', 'Medellín, Antioquia');
-    $template->setValue('fecha_acta', replace: date('d \d\e F \d\e Y', strtotime($fecha_inicio)));
+    $template->setValue('fecha_acta', date('d \d\e F \d\e Y', strtotime($fecha_inicio)));
     $template->setValue('nombre_subdirector', 'MARLON GÓMEZ RODRÍGUEZ');
     $template->setValue('cargo_subdirector', 'Subdirector Administrativo y financiero del DMMED');
 
@@ -204,7 +202,7 @@ PARÁGRAFO CUARTO: L";
     $template->setValue('valor_numerico', '$' . number_format($datos['valor_total_contrato'], 0, ',', '.'));
     $template->setValue('forma_pago', $forma_pago_texto);
 
-    $template->setValue('cargo_contratista', replace: $datos['profesion'] ?? 'N/A');
+    $template->setValue('cargo_contratista', $datos['profesion'] ?? 'N/A');
 
     $template->setValue('plazo_contrato', $texto_plazo);
 
@@ -214,8 +212,8 @@ PARÁGRAFO CUARTO: L";
         $template->setValue('numero_acta', '00000214');
         $template->setValue('anio_contrato', date('Y'));
         $template->setValue('nit_contratista', $datos['documento_identidad']);
-        $template->setValue('representante_legal', replace: $representante_nombre);
-        $template->setValue(search: 'contratista', replace: $texto_contratista);
+        $template->setValue('representante_legal', $representante_nombre);
+        $template->setValue('contratista', $texto_contratista);
 
         $template->setValue('nit_representante_legal', $representante_cc);
 

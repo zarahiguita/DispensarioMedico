@@ -181,9 +181,48 @@ foreach (['docx', 'doc', 'pdf'] as $ext) {
 
 
 // === ACTA DE INICIO (busca en ambas rutas)
-$nombreActa = "Acta_Inicio_{$numeroContratoCompleto}.docx";
-$rutaActaPrestacion = __DIR__ . "/contratos_acta_inicio_prestacion/" . $nombreActa;
-$rutaActaContrato = __DIR__ . "/contratos_acta_inicio_contrato/" . $nombreActa;
+// === ACTA DE INICIO (igual que contrato/póliza)
+$rutaActaPrestacion = null;
+$rutaActaContrato = null;
+$exts = ['docx','doc','pdf'];
+
+// Carpeta(s) con acta firmada
+$carpetasActaFirmada = [
+    __DIR__ . "/contratos_acta_inicio_prestacion_firmado/",
+    __DIR__ . "/contratos_acta_inicio_contrato_firmado/"
+];
+
+// Carpeta(s) con acta generada pero sin firmar
+$carpetasActaNoFirmada = [
+    __DIR__ . "/contratos_acta_inicio_prestacion/",
+    __DIR__ . "/contratos_acta_inicio_contrato/"
+];
+
+$archivoActaFirmada = null;
+$urlActaFirmada = null;
+foreach ($carpetasActaFirmada as $carpeta) {
+    foreach ($exts as $ext) {
+        $coincide = glob($carpeta . "*{$numeroContrato}*.{$ext}");
+        if (!empty($coincide)) {
+            $archivoActaFirmada = basename($coincide[0]);
+            $urlActaFirmada = basename($carpeta) . "/" . $archivoActaFirmada;
+            break 2;
+        }
+    }
+}
+
+$archivoActaNoFirmada = null;
+$urlActaNoFirmada = null;
+foreach ($carpetasActaNoFirmada as $carpeta) {
+    foreach ($exts as $ext) {
+        $coincide = glob($carpeta . "*{$numeroContrato}*.{$ext}");
+        if (!empty($coincide)) {
+            $archivoActaNoFirmada = basename($coincide[0]);
+            $urlActaNoFirmada = basename($carpeta) . "/" . $archivoActaNoFirmada;
+            break 2;
+        }
+    }
+}
 
 $urlActa = null;
 if (file_exists($rutaActaPrestacion)) {
@@ -245,17 +284,21 @@ if (file_exists($rutaActaPrestacion)) {
 &nbsp;&nbsp;
 
 <!-- Acta de inicio -->
-<?php if ($urlActa): ?>
-    <a href="<?= $urlActa ?>" download title="Descargar acta de inicio">
+<?php if ($urlActaFirmada): ?>
+    <a href="<?= $urlActaFirmada ?>" download title="Descargar acta de inicio">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#2B579A">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
         <path d="M14 2v6h6" fill="#2B579A"/>
         <text x="7" y="18" font-family="Arial" font-size="12" fill="white">A</text>
       </svg>
     </a>
+<?php elseif ($archivoActaNoFirmada): ?>
+    <a href="subir_acta.php?cedula=<?= urlencode($cedula) ?>" class="btn-doc" title="Hay acta generada sin firmar">
+      📤 Pendiente firma de acta de inicio
+    </a>
 <?php else: ?>
-    <a href="formulario_acta.php?cedula=<?= urlencode($cedula) ?>" class="btn-doc" title="Registrar acta de inicio">
-      📝 Pendiente Acta de inicio
+    <a href="formulario_acta.php?cedula=<?= urlencode($cedula) ?>" class="btn-doc" title="Falta formulario de acta de inicio">
+      ❌ Pendiente acta de inicio
     </a>
 <?php endif; ?>
 

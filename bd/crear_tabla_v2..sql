@@ -20,6 +20,10 @@ CREATE TABLE tipo_banco (
     tipo VARCHAR(100) NOT NULL
 );
 
+INSERT INTO tipo_banco (tipo) VALUES ('AHORROS');
+INSERT INTO tipo_banco (tipo) VALUES ('CORRIENTE');
+
+
 CREATE TABLE objeto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL
@@ -66,7 +70,7 @@ CREATE TABLE ordenador_gasto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     grado VARCHAR(100) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    cedula VARCHAR(100) NOT NULL
+    cedula VARCHAR(100) NOT NULL,
     lugar_expedicion_cedula VARCHAR(100) NOT NULL
 );
 
@@ -93,6 +97,12 @@ CREATE TABLE modalidad_contratacion (
     fecha_creacion DATE,
     fecha_actualizacion DATE
 );
+
+INSERT INTO modalidad_contratacion (modalidad, fecha_creacion, fecha_actualizacion)
+VALUES ('Prestación de Servicios', CURDATE(), CURDATE());
+
+INSERT INTO modalidad_contratacion (modalidad, fecha_creacion, fecha_actualizacion)
+VALUES ('Contrato', CURDATE(), CURDATE());
 
 -- Tabla tipo de contratación
 CREATE TABLE tipo_contratacion (
@@ -135,6 +145,11 @@ CREATE TABLE lugar_ejecucion (
     lugar VARCHAR(100),
     direccion VARCHAR(150)
 );
+
+
+INSERT INTO lugar_ejecucion (lugar, direccion)
+VALUES ('Sede Principal', 'Calle 10 # 23-45, Medellín');
+
 
 -- Tabla pólizas
 CREATE TABLE poliza (

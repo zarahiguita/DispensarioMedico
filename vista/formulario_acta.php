@@ -11,7 +11,6 @@ $modalidades = $conexion->query("SELECT modalidad FROM modalidad_contratacion");
 $ordenadores = $conexion->query("SELECT nombre FROM ordenador_gasto");
 $rps = $conexion->query("SELECT numero, fecha, valor FROM rp");
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 }
@@ -21,6 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    	<link rel="stylesheet" type="text/css" href="../css/general.css">
+
     <title>Formulario Acta de Inicio</title>
     <style>
         body { background-color: white; font-family: Arial, sans-serif; margin: 0; padding: 0; }
@@ -78,6 +79,18 @@ textarea {
     </script>
 </head>
 <body>
+ <a href="formulario_busqueda.php" class="boton-buscar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M10 2a8 8 0 105.293 14.707l5 5a1 1 0 001.414-1.414l-5-5A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4z"/>
+    </svg>
+    Buscar empleado
+  </a>
+  <a href="../menu1.php" class="boton-volver">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" fill="none"/>
+    </svg>
+    Volver
+  </a>
 
 <h2 class="form__titulo">FORMULARIO ACTA DE INICIO</h2>
 
