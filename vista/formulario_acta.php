@@ -12,7 +12,7 @@ $modalidades  = $conexion->query("SELECT modalidad FROM modalidad_contratacion")
 $ordenadores  = $conexion->query("SELECT nombre FROM ordenador_gasto");
 $rps          = $conexion->query("SELECT numero, fecha, valor FROM rp");
 
-// === Trae datos del contrato para precargar textos ===
+// === Trae datos del contrato para precargar textos (solo para defaults) ===
 $datos = null;
 if ($cedula !== '') {
     $stmt = $conexion->prepare("
@@ -48,12 +48,13 @@ function numeroALetrasMayus($n){
     return number_format((float)$n, 0, ',', '.'); // fallback
 }
 
-$valor_numerico = $datos['valor_total_contrato'] ?? 0;
+$valor_numerico = isset($datos['valor_total_contrato']) ? (float)$datos['valor_total_contrato'] : 0;
 $valor_letras   = numeroALetrasMayus($valor_numerico);
 $fecha_cdp_fmt  = fechaLargaEs($datos['fecha_cdp'] ?? '');
 $fecha_rp_fmt   = fechaLargaEs($datos['fecha_rp'] ?? '');
 $fecha_fin_fmt  = mb_strtoupper(fechaLargaEs($datos['fecha_terminacion_contrato'] ?? ''), 'UTF-8');
 
+// Texto por defecto (se recalculará vía JS con el RP que elija/ingrese el usuario)
 $forma_pago_default = "FORMA DE REMUNERACIÓN AL CONTRATISTA\tMDN – EJÉRCITO NACIONAL – DISPENSARIO MEDICO DE MEDELLIN, se obliga a pagar el 100% del valor del contrato, de la siguiente forma: 
 Los pagos que de conformidad con este contrato deba efectuar el MDN –EJÉRCITO NACIONAL–DISPENSARIO MEDICO DE MEDELLIN, al contrato se imputará a las apropiaciones presupuestales de la vigencia 2025, 
 SIIF- CDP No. " . ($datos['cdp'] ?? '___') . " del {$fecha_cdp_fmt} y CRP No. " . ($datos['rp'] ?? '___') . " del {$fecha_rp_fmt}, expedido por el Jefe de Presupuesto del DMMED, por el Rubro presupuestal " . ($datos['rubro_presupuestal'] ?? '___') . " " . ($datos['descripcion_rubro'] ?? '') . ", recurso 16 SSF, por valor de {$valor_letras} DE PESOS M/CTE ($" . number_format($valor_numerico, 0, ',', '.') . ",00) IVA INCLUIDO, pagos parciales de acuerdo al recibido a satisfacción mensual de cada solicitud realizada por el supervisor del contrato de acuerdo a las necesidades de la Dirección de Sanidad Ejército – Dispensario Médico de Medellín, previo cumplimiento de los siguientes requisitos:
@@ -105,6 +106,56 @@ $anio_contrato_default        = date('Y');
         .img-right { right: -320px; }
         .campo-extra { display: none; }
         hr { border: 0; border-top: 1px solid #fff; }
+        fieldset[disabled] { opacity: .7; }
+        /* Marca de agua detrás de todo */
+.img-left, .img-right {
+  z-index: -1;           /* siempre al fondo */
+  pointer-events: none;  /* no bloquea clics */
+}
+
+/* Inputs generales */
+select, input[type="text"], input[type="date"], input[type="number"], textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid #c9c9c9;    /* más suave */
+  border-radius: 8px;
+  background-color: #fff;       /* blanco, no verde */
+  color: #222;
+  margin-bottom: 14px;
+}
+
+/* Enfoque bonito */
+select:focus, input:focus, textarea:focus {
+  outline: none;
+  border-color: #AF1415;
+  box-shadow: 0 0 0 3px rgba(175, 20, 21, .15);
+}
+
+/* Textareas “bonitos” y auto-crecientes */
+.textarea-auto {
+  line-height: 1.45;
+  min-height: 140px;
+  max-height: 60vh;        /* por si escriben mucho */
+  white-space: pre-wrap;   /* respeta saltos de línea */
+  resize: none;            /* el alto lo maneja JS */
+  box-shadow: 0 1px 2px rgba(0,0,0,.06) inset;
+  transition: border .2s, box-shadow .2s, background-color .2s;
+}
+
+/* Encabezados / etiquetas para aire */
+label {
+  font-weight: 700;
+  margin: 10px 0 6px;
+}
+
+hr { border: 0; border-top: 1px solid #eee; }
+
+/* Sección bloqueada visualmente cuando está deshabilitada */
+fieldset[disabled] { opacity: .75; filter: grayscale(.1); }
+
     </style>
     <script>
         function toggleCampo(id, select) {
@@ -168,7 +219,11 @@ $anio_contrato_default        = date('Y');
     <select name="rp" id="rp" onchange="toggleCampo('nuevo_rp', this)" required>
         <option value="">-- Selecciona RP --</option>
         <?php while ($row = $rps->fetch_assoc()): ?>
-            <option value="<?= htmlspecialchars($row['numero']) ?>">
+            <option
+                value="<?= htmlspecialchars($row['numero']) ?>"
+                data-fecha="<?= htmlspecialchars($row['fecha']) ?>"
+                data-valor="<?= htmlspecialchars($row['valor']) ?>"
+            >
                 <?= 'N° ' . htmlspecialchars($row['numero']) . ' | Fecha: ' . htmlspecialchars($row['fecha']) . ' | Valor: $' . number_format($row['valor'], 0, ',', '.') ?>
             </option>
         <?php endwhile; ?>
@@ -183,7 +238,7 @@ $anio_contrato_default        = date('Y');
         <input type="date" name="fecha_rp" id="fecha_rp">
 
         <label for="valor_rp">Valor RP:</label>
-        <input type="number" name="valor_rp" id="valor_rp">
+        <input type="number" name="valor_rp" id="valor_rp" step="0.01">
     </div>
 
     <label for="ordenador_gasto">Ordenador del Gasto:</label>
@@ -211,67 +266,180 @@ $anio_contrato_default        = date('Y');
 
     <hr>
 
-    <!-- NUEVOS CAMPOS: plantillas editables -->
-    <h3 style="margin-top:0;">Textos de la plantilla (editables)</h3>
+    <!-- Sección de textos: deshabilitada y oculta hasta completar los campos base -->
+    <fieldset id="textosSection" disabled style="display:none; border:0; padding:0; margin:0;">
+      <h3 style="margin-top:0;">Textos de la plantilla (editables)</h3>
 
-    <label for="lugar">Lugar:</label>
-    <input type="text" id="lugar" name="lugar" value="<?= htmlspecialchars($lugar_default) ?>">
+      <label for="lugar">Lugar:</label>
+      <input type="text" id="lugar" name="lugar" value="<?= htmlspecialchars($lugar_default) ?>">
 
-    <label for="nombre_subdirector">Nombre Subdirector:</label>
-    <input type="text" id="nombre_subdirector" name="nombre_subdirector" value="<?= htmlspecialchars($subdirector_nombre_default) ?>">
+      <label for="nombre_subdirector">Nombre Subdirector:</label>
+      <input type="text" id="nombre_subdirector" name="nombre_subdirector" value="<?= htmlspecialchars($subdirector_nombre_default) ?>">
 
-    <label for="cargo_subdirector">Cargo Subdirector:</label>
-    <input type="text" id="cargo_subdirector" name="cargo_subdirector" value="<?= htmlspecialchars($subdirector_cargo_default) ?>">
+      <label for="cargo_subdirector">Cargo Subdirector:</label>
+      <input type="text" id="cargo_subdirector" name="cargo_subdirector" value="<?= htmlspecialchars($subdirector_cargo_default) ?>">
 
-    <label for="representante_legal">Representante legal:</label>
-    <input type="text" id="representante_legal" name="representante_legal" value="<?= htmlspecialchars($representante_nombre_default) ?>">
+      <label for="representante_legal">Representante legal:</label>
+      <input type="text" id="representante_legal" name="representante_legal" value="<?= htmlspecialchars($representante_nombre_default) ?>">
 
-    <label for="representante_cc">CC Representante legal:</label>
-    <input type="text" id="representante_cc" name="representante_cc" value="<?= htmlspecialchars($representante_cc_default) ?>">
+      <label for="representante_cc">CC Representante legal:</label>
+      <input type="text" id="representante_cc" name="representante_cc" value="<?= htmlspecialchars($representante_cc_default) ?>">
 
-    <label for="representante_lugar_cc">Lugar expedición CC Rep. legal:</label>
-    <input type="text" id="representante_lugar_cc" name="representante_lugar_cc" value="<?= htmlspecialchars($representante_lugar_default) ?>">
+      <label for="representante_lugar_cc">Lugar expedición CC Rep. legal:</label>
+      <input type="text" id="representante_lugar_cc" name="representante_lugar_cc" value="<?= htmlspecialchars($representante_lugar_default) ?>">
 
-    <div id="campo_numero_acta">
-      <label for="numero_acta">Número de Acta:</label>
-      <input type="text" id="numero_acta" name="numero_acta" value="<?= htmlspecialchars($numero_acta_default) ?>">
-    </div>
+      <div id="campo_numero_acta">
+        <label for="numero_acta">Número de Acta:</label>
+        <input type="text" id="numero_acta" name="numero_acta" value="<?= htmlspecialchars($numero_acta_default) ?>">
+      </div>
 
-    <label for="anio_contrato">Año del contrato:</label>
-    <input type="text" id="anio_contrato" name="anio_contrato" value="<?= htmlspecialchars($anio_contrato_default) ?>">
+      <label for="anio_contrato">Año del contrato:</label>
+      <input type="text" id="anio_contrato" name="anio_contrato" value="<?= htmlspecialchars($anio_contrato_default) ?>">
 
-    <label for="forma_pago_texto">Forma de pago (puedes editar):</label>
-    <textarea id="forma_pago_texto" name="forma_pago_texto" rows="12"><?= htmlspecialchars($forma_pago_default) ?></textarea>
+      <label for="forma_pago_texto">Forma de pago (puedes editar):</label>
+      <textarea id="forma_pago_texto" name="forma_pago_texto"  class="textarea-auto" rows="12"><?= htmlspecialchars($forma_pago_default) ?></textarea>
 
-    <label for="texto_plazo">Texto de plazo (cambia con la modalidad, pero puedes editar):</label>
-    <textarea id="texto_plazo" name="texto_plazo" rows="4"><?= htmlspecialchars($plazo_prestacion_default) ?></textarea>
+      <label for="texto_plazo">Texto de plazo (cambia con la modalidad, pero puedes editar):</label>
+      <textarea id="texto_plazo" name="texto_plazo"  class="textarea-auto" rows="4"><?= htmlspecialchars($plazo_prestacion_default) ?></textarea>
+    </fieldset>
 
     <input type="submit" value="📂 Generar Acta de inicio" class="btn_enviar">
 </form>
 
 <script>
-  // Plantillas desde PHP
+  // ========= CONSTANTES desde PHP (para armar el texto) =========
+  const CDP_NUM     = <?= json_encode($datos['cdp'] ?? '___') ?>;
+  const CDP_FECHA   = <?= json_encode($fecha_cdp_fmt) ?>;
+  const RUBRO_NUM   = <?= json_encode($datos['rubro_presupuestal'] ?? '___') ?>;
+  const RUBRO_DESC  = <?= json_encode($datos['descripcion_rubro'] ?? '') ?>;
+  const VALOR_LETRAS= <?= json_encode($valor_letras) ?>;
+  const VALOR_NUM   = <?= json_encode(number_format($valor_numerico, 0, ',', '.')) ?>;
+
   const PLAZO_PRESTACION = <?= json_encode($plazo_prestacion_default, JSON_UNESCAPED_UNICODE) ?>;
   const PLAZO_CONTRATO   = <?= json_encode($plazo_contrato_default, JSON_UNESCAPED_UNICODE) ?>;
 
+  // ========= ELEMENTOS =========
+  const textosSection = document.getElementById('textosSection');
   const selModalidad  = document.getElementById('modalidad');
   const campoNumActa  = document.getElementById('campo_numero_acta');
+
+  const fechaInicio   = document.getElementById('fecha_inicio');
+  const rpSelect      = document.getElementById('rp');
+  const numeroRP      = document.getElementById('numero_rp');
+  const fechaRP       = document.getElementById('fecha_rp');
+  const valorRP       = document.getElementById('valor_rp');
+
+  const txtFormaPago  = document.getElementById('forma_pago_texto');
   const txtPlazo      = document.getElementById('texto_plazo');
+
+  // Para no sobreescribir si el usuario ya editó manualmente
+  let formaPagoDirty = false;
+  txtFormaPago.addEventListener('input', () => { formaPagoDirty = true; });
+
+  // ========= HELPERS =========
+  function formatFechaES(iso) {
+    if (!iso) return '___';
+    const d = new Date(iso);
+    if (isNaN(d)) return iso; // por si ya viene en texto
+    const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+  }
+
+  function getRPInfo() {
+    const v = rpSelect.value;
+    if (!v) return null;
+
+    if (v === 'nuevo') {
+      if (!numeroRP.value || !fechaRP.value || !valorRP.value) return null;
+      return {
+        numero: numeroRP.value,
+        fecha:  formatFechaES(fechaRP.value),
+        valor:  valorRP.value
+      };
+    } else {
+      const opt = rpSelect.options[rpSelect.selectedIndex];
+      const fecha = opt ? opt.getAttribute('data-fecha') : '';
+      const valor = opt ? opt.getAttribute('data-valor') : '';
+      return {
+        numero: v,
+        fecha:  formatFechaES(fecha),
+        valor:  valor
+      };
+    }
+  }
+
+  function baseCompleta() {
+    if (!selModalidad.value) return false;
+    if (!fechaInicio.value)  return false;
+    const rp = getRPInfo();
+    return !!rp;
+  }
 
   function aplicarModalidad() {
     const val = (selModalidad.value || '').toLowerCase();
     if (val.indexOf('prestación') !== -1 || val.indexOf('prestacion') !== -1) {
       campoNumActa.style.display = 'block';
-      txtPlazo.value = PLAZO_PRESTACION;
+      // El texto de plazo puede cambiar si el usuario no lo ha tocado (usamos misma bandera para simplificar)
+      if (!formaPagoDirty) txtPlazo.value = PLAZO_PRESTACION;
     } else if (val) {
       campoNumActa.style.display = 'none';
-      txtPlazo.value = PLAZO_CONTRATO;
+      if (!formaPagoDirty) txtPlazo.value = PLAZO_CONTRATO;
     } else {
       campoNumActa.style.display = 'none';
     }
   }
-  selModalidad.addEventListener('change', aplicarModalidad);
+
+  function recomputeFormaPago() {
+    const rp = getRPInfo();
+    if (!rp) return;
+
+    // Sólo regenero si el usuario NO lo tocó
+    if (formaPagoDirty) return;
+
+    const texto = `FORMA DE REMUNERACIÓN AL CONTRATISTA\tMDN – EJÉRCITO NACIONAL – DISPENSARIO MEDICO DE MEDELLIN, se obliga a pagar el 100% del valor del contrato, de la siguiente forma: 
+Los pagos que de conformidad con este contrato deba efectuar el MDN –EJÉRCITO NACIONAL–DISPENSARIO MEDICO DE MEDELLIN, al contrato se imputará a las apropiaciones presupuestales de la vigencia 2025, 
+SIIF- CDP No. ${CDP_NUM} del ${CDP_FECHA} y  CRP No. ${rp.numero} del ${rp.fecha}, expedido por el Jefe de Presupuesto del DMMED, por el Rubro presupuestal ${RUBRO_NUM} ${RUBRO_DESC}, recurso 16 SSF, por valor de ${VALOR_LETRAS} DE PESOS M/CTE ($${VALOR_NUM},00) IVA INCLUIDO, pagos parciales de acuerdo al recibido a satisfacción mensual de cada solicitud realizada por el supervisor del contrato de acuerdo a las necesidades de la Dirección de Sanidad Ejército – Dispensario Médico de Medellín, previo cumplimiento de los siguientes requisitos:
+
+a) Acta de recibo a satisfacción parcial, expedida por el supervisor, y representante del contratista.
+b) Situación de recursos por parte del Ministerio de Hacienda y Crédito Público, Dirección del Tesoro Nacional (asignación cupo PAC).
+c) Que se ejecuten los demás trámites administrativos correspondientes.
+d) Verificación por parte del MDN – EJÉRCITO NACIONAL – DIRECCIÓN DE SANIDAD – DISPENSARIO MEDICO DE MEDELLIN del cumplimiento del contratista del pago de aportes parafiscales y los propios del SENA, ICBF y Cajas de Compensación Familiar.
+e) Documento equivalente a factura según artículo 3 del Decreto 522 de 2003.
+
+PARÁGRAFO PRIMERO. Este pago se considera de contado por lo que no se aceptará el cobro de financiación en este caso.
+PARÁGRAFO SEGUNDO. En el evento de prórroga en la entrega del objeto del contrato, se postergará el pago.
+PARÁGRAFO TERCERO: El MDN – EJÉRCITO NACIONAL – DIRECCIÓN DE SANIDAD – DISPENSARIO MEDICO DE MEDELLIN, realizará los pagos en la cuenta.
+PARÁGRAFO CUARTO: L`;
+
+    txtFormaPago.value = texto;
+  }
+
+  function toggleTextosSection() {
+    const ready = baseCompleta();
+    textosSection.style.display = ready ? 'block' : 'none';
+    textosSection.disabled = !ready;
+    if (ready) {
+      aplicarModalidad();
+      recomputeFormaPago();
+    }
+  }
+
+  // ========= LISTENERS =========
+  selModalidad.addEventListener('change', () => { aplicarModalidad(); toggleTextosSection(); });
+  fechaInicio.addEventListener('change', toggleTextosSection);
+
+  rpSelect.addEventListener('change', () => { 
+    // Cuando cambio RP, permito recomputar (si el usuario no tocó manualmente)
+    toggleTextosSection(); 
+  });
+  numeroRP.addEventListener('input', () => { toggleTextosSection(); });
+  fechaRP.addEventListener('change', () => { toggleTextosSection(); });
+  valorRP.addEventListener('input', () => { toggleTextosSection(); });
+
+  // Inicializa
   aplicarModalidad();
+  toggleTextosSection();
 </script>
+
 </body>
 </html>
