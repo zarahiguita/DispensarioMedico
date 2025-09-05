@@ -17,3 +17,5 @@
     .boton-volver { top: 20px; right: 20px; }
     .boton-buscar svg, .boton-volver svg { width: 16px; height: 16px; fill: white; }
     .boton-buscar:hover, .boton-volver:hover { background-color: #45a049; }
+
+    
