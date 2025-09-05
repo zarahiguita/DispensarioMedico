@@ -122,7 +122,7 @@ $objeto_poliza = $conexion->query("SELECT nombre FROM objeto");
 
                 <div class="campo">
                     <label>Objeto</label>
-                    <select name="objeto" id="objetoSelect" required>
+                    <select name="objeto_contrato" id="objeto_contrato" required>
                         <option value="">Seleccione un objeto</option>
                         <?php while ($row = $objeto_poliza->fetch_assoc()) { ?>
                         <option value="<?= $row['nombre'] ?>"><?= $row['nombre'] ?></option>

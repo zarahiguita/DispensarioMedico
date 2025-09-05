@@ -81,6 +81,7 @@ $representante_nombre_default = "TITO ALBERTO ZAPATA BEDOYA";
 $representante_cc_default     = "71.614.965";
 $representante_lugar_default  = "Medellín";
 $numero_acta_default          = "00000000";
+$numero_folio_default         = "38";
 $anio_contrato_default        = date('Y');
 ?>
 <!DOCTYPE html>
@@ -293,6 +294,12 @@ fieldset[disabled] { opacity: .75; filter: grayscale(.1); }
         <input type="text" id="numero_acta" name="numero_acta" value="<?= htmlspecialchars($numero_acta_default) ?>">
       </div>
 
+      
+      <div id="campo_numero_folio">
+        <label for="numero_folio">Número de Acta:</label>
+        <input type="text" id="numero_folio" name="numero_folio" value="<?= htmlspecialchars($numero_folio_default) ?>">
+      </div>
+
       <label for="anio_contrato">Año del contrato:</label>
       <input type="text" id="anio_contrato" name="anio_contrato" value="<?= htmlspecialchars($anio_contrato_default) ?>">
 
@@ -322,6 +329,8 @@ fieldset[disabled] { opacity: .75; filter: grayscale(.1); }
   const textosSection = document.getElementById('textosSection');
   const selModalidad  = document.getElementById('modalidad');
   const campoNumActa  = document.getElementById('campo_numero_acta');
+  const campoNumFolio  = document.getElementById('campo_numero_folio');
+
 
   const fechaInicio   = document.getElementById('fecha_inicio');
   const rpSelect      = document.getElementById('rp');

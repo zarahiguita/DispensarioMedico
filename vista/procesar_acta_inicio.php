@@ -58,6 +58,8 @@ $representante_nombre   = $_POST['representante_legal'] ?? 'TITO ALBERTO ZAPATA 
 $representante_cc       = $_POST['representante_cc'] ?? '71.614.965';
 $representante_lugar_cc = $_POST['representante_lugar_cc'] ?? 'Medellín';
 $numero_acta            = $_POST['numero_acta'] ?? '';
+$numero_folio            = $_POST['numero_folio'] ?? '';
+
 $anio_contrato          = $_POST['anio_contrato'] ?? date('Y');
 
 $forma_pago_texto_post  = $_POST['forma_pago_texto'] ?? '';
@@ -213,6 +215,8 @@ PARÁGRAFO CUARTO: L";
     if ($modalidad === 'Prestación de Servicios') {
         $modalidad_boolean = "contratos_acta_inicio_prestacion/";
         $template->setValue('numero_acta', $numero_acta ?: '00000000');
+        $template->setValue('folio', $numero_folio ?: '38');
+
         $template->setValue('anio_contrato', $anio_contrato);
         $template->setValue('nit_contratista', $datos['documento_identidad']);
         $template->setValue('representante_legal', $representante_nombre);
