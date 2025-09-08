@@ -159,7 +159,7 @@ if (!$unidad) {
           <label>Dirección Lugar de Ejecución</label>
           <input type="text" name="direccion_lugar_ejecucion" id="direccion_lugar_ejecucion" readonly>
         </div>
-        <div class="campo"><label>Fecha de suscrpción</label><input type="date" name="fecha_suscripcion" required></div>
+        <div class="campo"><label>Fecha de suscripción</label><input type="date" name="fecha_suscripcion" required></div>
         <div class="campo"><label>Fecha Final del Contrato</label><input type="date" name="fecha_final_contrato" required></div>
         <div class="campo">
           <label>Nombre del Supervisor</label>

@@ -212,7 +212,7 @@
                         
                     </div>
                 </li>
-                <li><a href="vista/form_enterado_supervisor.php">Formulario de enterado supervisado. </a></li>
+                <li><a href="vista/form_enterado_supervisor.php">Formulario de enterado supervisado </a></li>
                 <li><a href="vista/formulario_contrato.php">Contrato de prestación de servicios</a></li>
                 <li><a href="vista/excel.php">Base de datos</a></li>
 
